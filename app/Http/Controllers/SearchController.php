@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Search\UserSearch;
 use Illuminate\Http\Request;
-use UserSearch;
 
 class SearchController extends Controller
 {
