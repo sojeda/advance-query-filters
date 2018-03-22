@@ -2,9 +2,8 @@
 
 namespace App\Search;
 
-use App\Search\Filters\City;
-use App\Search\Filters\Name;
 use App\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class UserSearch
@@ -13,16 +12,26 @@ class UserSearch
     {
         $query = (new User)->newQuery();
 
-        // Search for a user based on their name.
-        if ($filters->has('name')) {
-            $query = Name::apply($query, $filters->input('name'));
-        }
-
-        // Search for a user based on their city.
-        if ($filters->has('city')) {
-            $query = City::apply($query, $filters->input('city'));
-        }
+        $query = static::applyFiltersToQuery($filters, $query);
 
         return $query->get();
+    }
+
+    private static function applyFiltersToQuery(Request $filters, Builder $query)
+    {
+        foreach ($filters->all() as $filterName => $value) {
+
+            $decorator =
+                __NAMESPACE__ . '\\Filters\\' .
+                str_replace(' ', '', ucwords(
+                    str_replace('_', ' ', $filterName)));
+
+            if (class_exists($decorator)) {
+                $query = $decorator::apply($query, $value);
+            }
+
+        }
+
+        return $query;
     }
 }
