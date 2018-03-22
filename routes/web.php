@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+/** @see \App\Http\Controllers\SearchController::filter() */
+Route::post('/search', 'SearchController@filter');
