@@ -9,21 +9,32 @@ class SearchController extends Controller
 {
     public function filter(Request $request, User $user)
     {
-        // Buscar un usuario basado en su nombre
+        // Crear una instancia de query
+        $user = $user->newQuery();
+
+        // Buscar el usuario basado en su nombre
         if ($request->has('name')) {
-
-            // Si el existe el parametro de la Ciudad buscar por la ciudad
-            if ($request->has('city')) {
-
-                // Buscar el usuario basado en el nombre y en la ciudad
-
-                return $user->where('name', $request->input('name'))
-                    ->where('city', $request->input('city'))
-                    ->get();
-            }
-
-            return $user->where('name', $request->input('name'))->get();
-
+            $user->where('name', $request->get('name'));
         }
+
+        // Buscar el usuario basado en su empresa
+        if ($request->has('company')) {
+            $user->where('company', $request->get('company'));
+        }
+
+        // Buscar el usuario basado en su ciudad
+        if ($request->has('city')) {
+            $user->where('city', $request->get('city'));
+        }
+
+        // Buscar el usuario basado en su ciudad
+        if ($request->has('phone')) {
+            $user->where('phone', $request->get('phone'));
+        }
+
+        // Continuar con toda la lista de filtros...
+
+        // Obtener el resultado y retornarlo
+        return $user->get();
     }
 }
